@@ -1,0 +1,114 @@
+body{
+	background-color: rgb(240, 240, 240);
+	font-size:15.2px;
+	line-height:1.65em;
+	padding-top: 50px;
+}
+li{
+	line-height:1.8em;
+}
+footer{
+	margin-top:2em;
+	font-size:88%;
+	text-align:center;
+	border-top:3px solid rgb(0, 0, 0);
+	padding-top:0.5em;
+	clear:both;
+}
+#main{
+	width:85%;
+	min-width:270px;
+	max-width:1440px;
+	margin:0 auto;
+	padding:25px 25px 0 25px;
+	background-color: white;
+}
+#loginbox{
+	width:90%;
+	min-width:320px;
+	max-width:360px;
+	margin:0 auto;
+	margin-top:40px;
+	background-color:rgba(255,255,255,0.6);
+	box-shadow:0 0 3px rgb(100,100,100);
+	border-radius:5px;
+	padding:25px;
+}
+#loginbox h2{
+	margin-bottom:15px;
+}
+#uploader input[type="file"]{
+	display:inline-block;
+}
+#uploader #drop{
+	width:90%;
+	border: 3px dotted gray;
+	padding:100px 0 100px 0;
+	margin:15px auto;
+	font-size:120%;
+	text-align: center;
+}
+#uploader .item{
+	margin:2em 0 2em 0;
+	font-size:84%;
+}
+#uploader .active{
+	border-color: orange !important;
+	background-color:rgb(240,240,255) !important;
+}
+.content{
+	min-height:400px;
+}
+.form-sm{
+	max-width:600px;
+}
+.form-xs{
+	max-width:400px;
+}
+#dir_list{
+	max-height:300px;
+	overflow:auto;
+}
+#dir_list ul ul,#move ul ul{
+	margin-left:0;
+	padding-left:20px;
+}
+
+/*覆蓋BS 3的CSS 開始*/
+.page-header{
+	margin-top:0;
+}
+/*覆蓋BS 3的CSS 結束*/
+
+@media screen and (max-width:768px){
+	#main{
+		-moz-box-sizing:border-box;
+		-webkit-box-sizing:border-box;
+		box-sizing:border-box;
+		width:100%;
+	}
+	#file_list table th,#file_list table td:nth-child(1){
+		display:none;
+	}
+	#file_list table tr{
+		display:block;
+		margin-bottom:1em;
+	}
+	#file_list table td{
+		display:block;
+		width:60%;
+		padding:5px;
+		float:left;
+		border:none;
+		word-wrap: break-word;
+		word-break: break-all;
+	}
+	#file_list table td:nth-child(2n+1){
+		width:40%;
+	}
+	#file_list table tr:after {
+		display: block;
+		clear: both;
+		content: "";
+	}
+}

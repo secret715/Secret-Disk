@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{part} | {title}</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="robots" content="index,follow,noodp,noydir" />
+	<meta name="application-name" content="{title}" />
+	<meta name="author" content="Secret" />
+	<meta property="og:title" content="{part} | {title}" />
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="{title}" />
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link href="{style}" rel="stylesheet" type="text/css">
+	<script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+	{scripts}
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="index.php">{title}</a>
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#nav-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+			<div id="nav-collapse" class="collapse navbar-collapse">
+				<ul class="nav navbar-nav navbar-right">
+					{nav}
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="main" class="container-fluid">
+		<div class="content">
+			{content}
+		</div>
+		<footer>
+			<p>Secret Disk 由 <a href="http://disk.gdsecret.net/" target="_black">太陽部落格站長 Secret</a>製作！</p>
+		</footer>
+	</div>
+</body>
+</html>
