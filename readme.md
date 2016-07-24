@@ -1,7 +1,4 @@
-﻿===============================================
-Secret Disk 由 Secret (http://gdsecret.com/) 製作
-使用 GNU AFFERO GENERAL PUBLIC LICENSE 3.0 (AGPL 3.0) 授權。
-===============================================
+
 
 Secret Disk
 -----
@@ -32,3 +29,7 @@ Secret Disk
 >jQuery File Upload v9.12.5
 授權：MIT License  
 官方網站：https://blueimp.github.io/jQuery-File-Upload/
+
+***
+Secret Disk 由 Secret (http://gdsecret.com/) 製作
+使用 GNU AFFERO GENERAL PUBLIC LICENSE 3.0 (AGPL 3.0) 授權。
