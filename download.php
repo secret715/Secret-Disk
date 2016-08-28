@@ -42,9 +42,13 @@ if(!isset($_GET['id'])&&$_GET['id']==''){
 $_file=sd_get_result("SELECT * FROM `file` WHERE `share_id`='%s'",array($_GET['id']));
 
 if($_file['num_rows']<1){
+	header('Content-type: text/html; charset=utf-8');
+	echo '此檔案不存在';
 	exit;
 }
 if($_file['row']['share']!=1){
+	header('Content-type: text/html; charset=utf-8');
+	echo '此檔案不公開，僅限上傳者可下載';
 	exit;
 }
 

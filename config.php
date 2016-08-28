@@ -38,6 +38,9 @@ if(!session_id()) {
 
 if(!isset($_COOKIE['login']) && isset($_SESSION['Disk_Username'])){
 	sd_loginout();//直接登出
+	if(file_exists('index.php')){
+		header('Location: index.php');
+	}
 	exit;
 }
 
@@ -46,4 +49,4 @@ $disk['site_name']='Secret Disk 1.0';//網站名稱
 $disk['register']='1';//是否開啟註冊 1為開啟  0為關閉
 $disk['upload']['banext'] = array("htaccess");//禁止的副檔名
 $disk['upload']['max_size'] = '384000';//單檔上傳大小限制 單位 KB
-$disk['default']['file_space']='2000000';//預設檔案儲存空間  單位 KB
+$disk['default']['file_space']='200000000';//預設檔案儲存空間  單位 KB

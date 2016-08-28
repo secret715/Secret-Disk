@@ -38,6 +38,9 @@ if(!session_id()) {
 
 if(!isset($_COOKIE['login']) && isset($_SESSION['Disk_Username'])){
 	sd_loginout();//直接登出
+	if(file_exists('index.php')){
+		header('Location: index.php');
+	}
 	exit;
 }
 

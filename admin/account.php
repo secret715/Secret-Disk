@@ -45,7 +45,7 @@ if(!isset($_SESSION['Disk_Username']) or $_SESSION['Disk_UserGroup'] != 9){
 
 if(isset($_GET['edit']) && $_GET['edit'] != ''){
     $_member = sd_get_result("SELECT * FROM `member` WHERE `id` = '%d'",array(abs($_GET['edit'])));
-	if(isset($_POST['email'])&& filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+	if(isset($_POST['email'])&& filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)&&$_POST['file_space']>0){
 		if($_POST['password'] == ''){
 			$_password = $_member['row']['password'];
 		}else {

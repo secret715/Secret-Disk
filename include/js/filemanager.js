@@ -245,17 +245,17 @@ $(function(){
 	});
 	
 	
-	$(document.body).on('click','#file_list table .del',function(e){
+	$(document.body).on('click','.context-menu .del',function(e){
 		e.preventDefault();
-		var self=$(this);
+		var id=$(this).attr('data-id');
 		if(window.confirm("確定刪除？")){
 			$.ajax({
-				url:'include/ajax/file.php?del&id='+$(this).parents('tr').attr('data-id'),
+				url:'include/ajax/file.php?del&id='+id,
 				type: 'GET',
 				dataType: 'json',
 				success: function(data){
 					if(data.status=='success'){
-						self.parents('tr').remove();
+						$('tr[data-id="'+id+'"]').remove();
 						$('#space_info').html(data.info);
 					}
 				}
@@ -263,10 +263,10 @@ $(function(){
 		}
 	});
 	
-	$(document.body).on('click','#file_list table .share',function(e){
+	$(document.body).on('click','.context-menu .share',function(e){
 		e.preventDefault();
 		$.ajax({
-			url:'include/ajax/file.php?share&id='+$(this).parents('tr').attr('data-id'),
+			url:'include/ajax/file.php?share&id='+$(this).attr('data-id'),
 			type: 'GET',
 			dataType: 'json',
 			success: function(data){
@@ -276,10 +276,10 @@ $(function(){
 			}
 		});
 	});
-	$(document.body).on('click','#file_list table .unshare',function(e){
+	$(document.body).on('click','.context-menu .unshare',function(e){
 		e.preventDefault();
 		$.ajax({
-			url:'include/ajax/file.php?unshare&id='+$(this).parents('tr').attr('data-id'),
+			url:'include/ajax/file.php?unshare&id='+$(this).attr('data-id'),
 			type: 'GET',
 			dataType: 'json',
 			success: function(data){
@@ -289,11 +289,11 @@ $(function(){
 			}
 		});
 	});
-	$(document.body).on('click','#file_list table .rename',function(e){
+	$(document.body).on('click','.context-menu .rename',function(e){
 		e.preventDefault();
 		var modal=$('#rename');
 		var $t=$(this);
-		var id=$(this).parents('tr').attr('data-id');
+		var id=$(this).attr('data-id');
 		var name=$(this).attr('data-name').substring(0,$(this).attr('data-name').lastIndexOf('.'));
 		var ext=$(this).attr('data-name').substring($(this).attr('data-name').lastIndexOf('.'));
 		modal.modal('show');
@@ -331,10 +331,10 @@ $(function(){
 		});
 	});
 	
-	$(document.body).on('click','#file_list table .move',function(e){
+	$(document.body).on('click','.context-menu .move',function(e){
 		e.preventDefault();
 		var modal=$('#move');
-		var id=$(this).parents('tr').attr('data-id');
+		var id=$(this).attr('data-id');
 		modal.attr('data-type','file').modal('show').find('span.btn.btn-success').one('click',function(){
 			var self=$(this);
 			if(!self.hasClass('disabled')){
@@ -404,9 +404,24 @@ $(function(){
 			}
 		});
 	}
+	
 	sd_dir_list(dir);
 	sd_file_list(dir);
 	
+	
+	function sd_contextmenu_list(o){
+		html='<a class="list-group-item" href="readfile.php?id='+o.attr('data-share')+'"><span class="glyphicon glyphicon-save-file"></span> 下載</a>';
+		if(o.find('.glyphicon-globe').length>0){
+			html+='<a class="list-group-item" href="download.php?id='+o.attr('data-share')+'" target="_black"><span class="glyphicon glyphicon-link"></span> 取得連結</a><a class="list-group-item unshare" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-eye-close"></span> 取消分享</a>';
+		}else{
+			html+='<a class="list-group-item share" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-globe"></span> 分享</a>';
+		}
+		html+='<a class="list-group-item rename" href="#" data-id="'+o.attr('data-id')+'" data-name="'+o.attr('data-name')+'"><span class="glyphicon glyphicon-pencil"></span> 重新命名</a>';
+		html+='<a class="list-group-item move" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-move"></span> 移動</a>';
+		html+='<a class="list-group-item" href="viewfile.php/'+o.attr('data-name')+'?id='+o.attr('data-share')+'" target="_black"><span class="glyphicon glyphicon-new-window"></span> 預覽</a>';
+		html+='<a class="list-group-item del" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-trash"></span> 刪除</a>';
+		return html;
+	}
 	
 	$(document.body).on('click','#dir_list a,.breadcrumb > li a',function(e){
 		e.preventDefault();
@@ -416,4 +431,30 @@ $(function(){
 		$('#fileupload').fileupload({url: 'include/ajax/upload.php?dir='+dir});
 	});
 	
+	$('<div>').addClass('context-menu list-group').insertAfter('#file_list');
+	if($(window).width()>768){
+		$('body:not(.context-menu)').on('click', function(){
+			$('.context-menu').fadeOut(200);
+			$('#file_list table tr:gt(0)').removeClass('info');
+		});
+		
+		$(document.body).on('contextmenu','#file_list table tr:gt(0)',function(e){
+			e.preventDefault();
+			$('#file_list table tr:gt(0)').removeClass('info');
+			$(this).addClass('info');
+			
+			html=sd_contextmenu_list($(this));
+			
+			$('.context-menu').css({
+				top: e.pageY,
+				left: e.pageX
+			}).fadeIn(200).html(html);
+		});
+	}else{
+		$(document.body).on('click','.menu',function(e){
+			e.preventDefault();
+			html=sd_contextmenu_list($(this).parent().parent());
+			$('.context-menu').css({top: $(this).offset().top+25,left: $(this).offset().left-60}).html(html).toggle(200);
+		});
+	}
 });

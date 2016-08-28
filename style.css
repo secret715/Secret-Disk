@@ -73,6 +73,33 @@ footer{
 	margin-left:0;
 	padding-left:20px;
 }
+#file_list table{
+	font-size:88%;
+}
+#file_list td,#file_list th{
+	padding: 6px;
+	vertical-align: middle;
+}
+.context-menu {
+	position: absolute;
+	display: none;
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	border:1px soild gray;
+	box-shadow:0 0 1px gray;
+	border-radius:3px;
+	padding-top:5px;
+	padding-bottom:5px;
+	background-color:white;
+}
+.context-menu a.list-group-item{
+	color:#333;
+	min-width:160px;
+	padding:1px 20px;
+	border:none;
+	border-radius:0;
+}
+
 
 /*覆蓋BS 3的CSS 開始*/
 .page-header{
@@ -96,7 +123,7 @@ footer{
 	}
 	#file_list table td{
 		display:block;
-		width:60%;
+		width:70%;
 		padding:5px;
 		float:left;
 		border:none;
@@ -104,7 +131,7 @@ footer{
 		word-break: break-all;
 	}
 	#file_list table td:nth-child(2n+1){
-		width:40%;
+		width:30%;
 	}
 	#file_list table tr:after {
 		display: block;

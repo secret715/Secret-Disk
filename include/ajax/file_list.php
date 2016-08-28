@@ -81,17 +81,37 @@ if(isset($_GET['page'])&&$_GET['page']>0){
 	<?php } ?>
 </ol>
 <?php if($_file['num_rows']>0){ ?>
-<table class="table table-striped table-hover">
-	<tr>
-		<th></th>
-		<th>名稱</th>
-		<th>大小</th>
-		<th>上傳時間</th>
-		<th>管理</th>
-	</tr>
-	<?php do{ ?>
-	<tr data-id="<?php echo $_file['row']['id']; ?>">
-		<td></td>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th></th>
+			<th>名稱</th>
+			<th>大小</th>
+			<th>上傳時間</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	do{
+		switch(substr($_file['row']['type'],0,strpos($_file['row']['type'],'/'))){
+			case 'image':
+				$_icon='picture';
+				break;
+			case 'audio':
+				$_icon='music';
+				break;
+			case 'video':
+				$_icon='film';
+				break;
+			default:
+				$_icon='file';
+				break;
+		}
+	?>
+	<tr data-id="<?php echo $_file['row']['id']; ?>" data-share="<?php echo $_file['row']['share_id']; ?>" data-name="<?php echo $_file['row']['name']; ?>">
+		<td width="20">
+			<span class="glyphicon glyphicon-<?php echo $_icon; ?>"></span>
+		</td>
 		<td>
 			<a href="readfile.php?id=<?php echo $_file['row']['share_id']; ?>">
 				<?php echo $_file['row']['name']; ?>
@@ -100,28 +120,12 @@ if(isset($_GET['page'])&&$_GET['page']>0){
 			<span class="glyphicon glyphicon-globe"></span>
 			<?php } ?>
 		</td>
-		<td><?php echo sd_size($_file['row']['size']); ?></td>
-		<td><small><?php echo $_file['row']['mktime']; ?></small></td>
-		<td>
-			<div class="btn-group">
-				<div class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown">管理 <span class="caret"></span></div>
-				<ul class="dropdown-menu">
-					<li><a href="readfile.php?id=<?php echo $_file['row']['share_id']; ?>"><span class="glyphicon glyphicon-save-file"></span> 下載</a></li>
-					<?php if($_file['row']['share']==0){ ?>
-					<li><a class="share" href="#"><span class="glyphicon glyphicon-globe"></span> 分享</a></li>
-					<?php }else{ ?>
-					<li><a href="download.php?id=<?php echo $_file['row']['share_id']; ?>" target="_black"><span class="glyphicon glyphicon-link"></span> 取得連結</a></li>
-					<li><a class="unshare" href="#"><span class="glyphicon glyphicon-eye-close"></span> 取消分享</a></li>
-					<?php } ?>
-					<li><a class="rename" href="#" data-name="<?php echo $_file['row']['name']; ?>"><span class="glyphicon glyphicon-pencil"></span> 重新命名</a></li>
-					<li><a class="move" href="#"><span class="glyphicon glyphicon-move"></span> 移動</a></li>
-					<li><a href="viewfile.php/<?php echo $_file['row']['name']; ?>?id=<?php echo $_file['row']['share_id']; ?>" target="_black"><span class="glyphicon glyphicon-new-window"></span> 預覽</a></li>
-					<li><a class="del" href="#"><span class="glyphicon glyphicon-trash"></span> 刪除</a></li>
-				</ul>
-			</div>
-		</td>
+		<td><?php echo sd_size($_file['row']['size'],0); ?></td>
+		<td><?php echo date('Y-m-d H:i',strtotime($_file['row']['mktime'])); ?></td>
+		<td class="hidden-sm hidden-md hidden-lg"><span class="menu btn btn-info btn-xs">管理<span></td>
 	</tr>
 	<?php }while ($_file['row'] = $_file['query']->fetch_assoc()); ?>
+	</tbody>
 </table>
 <?php
 $_all_file=sd_get_result("SELECT COUNT(*) FROM `file` WHERE `dir`='%d' AND `owner`='%d'",array($_DiskENV['dir'],$_SESSION['Disk_Id']));

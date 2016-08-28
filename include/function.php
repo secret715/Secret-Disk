@@ -32,7 +32,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 */
 
 function sd_ver(){
-	return '1.0';
+	return '1.1';
 }
 
 function sd_keygen($_value=''){
@@ -40,8 +40,9 @@ function sd_keygen($_value=''){
 }
 function sd_login($_username,$_password){
 	global $SQL;
+	global $disk;
 	if (isset($_username)&&isset($_password)) {
-		$login = $SQL->query("SELECT `id`,`username`, `password`, `level` FROM `member` WHERE (`username` = '%s' OR `email` = '%s') AND `password` = '%s'",array(
+		$login = $SQL->query("SELECT `id`,`username`, `password`, `file_space`, `level` FROM `member` WHERE (`username` = '%s' OR `email` = '%s') AND `password` = '%s'",array(
 			$_username,
 			$_username,
 			sd_password($_password,$_username)
@@ -50,7 +51,7 @@ function sd_login($_username,$_password){
 		
 		//[相容] 7.3 版以前密碼----開始
 		if ($login->num_rows <1) {
-			$login = $SQL->query("SELECT `id`,`username`, `password`, `level` FROM `member` WHERE (`username` = '%s' OR `email` = '%s') AND `password` = '%s'",array(
+			$login = $SQL->query("SELECT `id`,`username`, `password`, `file_space`, `level` FROM `member` WHERE (`username` = '%s' OR `email` = '%s') AND `password` = '%s'",array(
 			$_username,
 			$_username,
 			md5(sha1($_password))
@@ -64,7 +65,11 @@ function sd_login($_username,$_password){
 		if ($login->num_rows > 0) {
 			$info = $login->fetch_assoc();
 			
-			$last_login= $SQL->query("UPDATE `member` SET `last_login` = now() WHERE `username` = '%s'",array($info['username']));
+			$SQL->query("UPDATE `member` SET `last_login` = now() WHERE `username` = '%s'",array($info['username']));
+			
+			if($info['file_space']==0){
+				$SQL->query("UPDATE `member` SET `file_space` = '%s' WHERE `username` = '%s'",array(abs($disk['default']['file_space']),$info['username']));
+			}
 			
 			$_SESSION['Disk_Username'] = strtolower($_username);
 			$_SESSION['Disk_Id'] = $info['id'];

@@ -268,7 +268,7 @@ if($_step==5){
 							$query[] = sprintf("INSERT INTO `member` (`username`, `password`, `email`, `file_space`, `level` , `joined` ,`last_login`) VALUES ('%s', '%s', '', 2000000000, '9', now(), now())", $admin_id, $admin_password);
 						}else{
 							$query=explode(';',str_replace("\r",'',str_replace("\n",'',file_get_contents('withsc.sql'))));
-							$query[] = "UPDATE `member` SET `file_space` = '1'";
+							$query[] = "UPDATE `member` SET `file_space` = '0'";
 						}
 						foreach($query as $val){
 							if($val!=''){

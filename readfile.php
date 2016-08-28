@@ -61,9 +61,16 @@ if(isset($_GET['id'])&&$_GET['id']!=''){
 			}
 		}
 	}
+	
+	if(isset($_SERVER['HTTP_USER_AGENT']) && (substr_count(strtolower($_SERVER['HTTP_USER_AGENT']),'edge')+substr_count(strtolower($_SERVER['HTTP_USER_AGENT']),'msie')>0)){
+		$_file_name=mb_convert_encoding(strtr($_file['row']['name'],' ','_'),'big5','utf-8');
+	}else{
+		$_file_name=strtr($_file['row']['name'],' ','_');
+	}
+	
 	header('Content-type: application/octet-stream');
 	header('Content-Transfer-Encoding: Binary');
-	header("Content-Disposition: attachment; filename= ".mb_convert_encoding(strtr($_file['row']['name'],' ','_'),'big5','utf-8'));
+	header("Content-Disposition: attachment; filename= ".$_file_name);
 	
 	echo sd_file_decode($_file['row']['private_key'],'file/'.$_file['row']['server_name'].'.sdfile',$_file['row']['size']);
 	
