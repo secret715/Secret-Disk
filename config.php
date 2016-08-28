@@ -45,7 +45,7 @@ if(!isset($_COOKIE['login']) && isset($_SESSION['Disk_Username'])){
 }
 
 date_default_timezone_set("Asia/Taipei");//時區設定
-$disk['site_name']='Secret Disk 1.0';//網站名稱
+$disk['site_name']='Secret Disk 1.1';//網站名稱
 $disk['register']='1';//是否開啟註冊 1為開啟  0為關閉
 $disk['upload']['banext'] = array("htaccess");//禁止的副檔名
 $disk['upload']['max_size'] = '384000';//單檔上傳大小限制 單位 KB
