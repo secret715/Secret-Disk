@@ -22,7 +22,7 @@ Secret Disk
 -----
 本專案所引用的其他開放原始碼軟體：
 
->Bootstrap v3.3.6
+>Bootstrap v3.3.7
 授權：MIT License  
 官方網站：http://getbootstrap.com/
 
