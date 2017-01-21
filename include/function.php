@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2016 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -32,7 +32,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 */
 
 function sd_ver(){
-	return '1.1';
+	return '1.1.1';
 }
 
 function sd_keygen($_value=''){

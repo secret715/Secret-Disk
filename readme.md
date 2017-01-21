@@ -26,7 +26,7 @@ Secret Disk
 授權：MIT License  
 官方網站：http://getbootstrap.com/
 
->jQuery File Upload v9.12.5
+>jQuery File Upload v9.14.2
 授權：MIT License  
 官方網站：https://blueimp.github.io/jQuery-File-Upload/
 

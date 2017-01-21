@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2016 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -152,12 +152,14 @@ $(function(){
 			</div>
 		</div>
 	</div>
+	<?php if($_member['row']['file_space']>0){ ?>
 	<div class="form-group">
 		<label class="col-sm-3 control-label">已用空間：</label>
 		<div class="col-sm-6">
 			<p class="form-control-static"><?php echo sd_size($_member['row']['used_space'],3).' / '.sd_size($_member['row']['file_space'],3).' ('.round($_member['row']['used_space']/$_member['row']['file_space']*100,3).'%)'.sd_space_progress($_member); ?></p>
 		</div>
 	</div>
+	<?php } ?>
 	<div class="form-group">
 		<label class="col-sm-3 control-label">權限：</label>
 		<div class="col-sm-6">

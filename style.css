@@ -57,7 +57,7 @@ footer{
 	background-color:rgb(240,240,255) !important;
 }
 .content{
-	min-height:400px;
+	min-height:calc(100vh - 100px - 3.1em);
 }
 .form-sm{
 	max-width:600px;
@@ -91,6 +91,7 @@ footer{
 	padding-top:5px;
 	padding-bottom:5px;
 	background-color:white;
+	z-index:1;
 }
 .context-menu a.list-group-item{
 	color:#333;
