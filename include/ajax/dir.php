@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -33,9 +33,10 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 set_include_path('../../include/');
 $includepath = true;
-require_once('../../config.php');
 require_once('../../Connections/SQL.php');
-if(!isset($_SESSION['Disk_Username'])){
+require_once('../../config.php');
+
+if(!isset($_SESSION['Disk_Username']) or !isset($_GET[$_SESSION['Disk_Auth']])){
 	exit;
 }
 

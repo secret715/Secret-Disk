@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -36,7 +36,7 @@ $includepath = true;
 require_once('../../Connections/SQL.php');
 require_once('../../config.php');
 
-if(!isset($_SESSION['Disk_Username'])){
+if(!isset($_SESSION['Disk_Username']) or !isset($_GET[$_SESSION['Disk_Auth']])){
 	exit;
 }
 
@@ -54,12 +54,15 @@ $_member=sd_get_result("SELECT * FROM `member` WHERE `id`='%d'",array($_SESSION[
 $_Input=@$_FILES['files'];
 
 if(isset($_Input) && $_Input['error'] == 0){
+	require_once('../key.php');
+	
 	$_dir='../../file';
 	$_max_upload_size = $disk['upload']['max_size']*1000;//單位Byte
 	$_extend = pathinfo($_Input['name'], PATHINFO_EXTENSION);//文件副檔名
 	$_name=sd_namefilter(mb_substr(rtrim($_Input['name'],'.'.$_extend),0,250,'utf-8')).'.'.$_extend;//原檔案名稱
 	$_server_name=substr(sd_keygen(),0,10).'.sdfile';//伺服器檔案名稱
 	$_private_key=hash('sha512',sd_keygen(mt_rand().$_server_name));
+	
 	
 	if(!is_dir("$_dir/")) {  //檢查資料夾是否存在
 		if(!mkdir("$_dir/")){  //不存在的話就創建資料夾
@@ -96,7 +99,7 @@ if(isset($_Input) && $_Input['error'] == 0){
 	$_Input['size'],
 	$_Input['type'],
 	$_DiskENV['dir'],
-	$_private_key,
+	base64_encode(sd_encode($_private_key,$disk['key'])),
 	substr(sd_keygen(mt_rand()),0,10),
 	$_SESSION['Disk_Id']));
 	

@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -53,7 +53,7 @@ $view = new View('include/theme/login.html',NULL,NULL,$disk['site_name'],'註冊
 	<div class="alert alert-danger">此帳號或電子信箱已被使用！</div>
 <?php } ?>
 <form id="loginbox" action="register.php" method="post">
-	<h2 class="text-center"><?php echo $disk['site_name']; ?> - 註冊</h2>
+	<h2 class="text-center">註冊</h2>
 	<div class="form-group">
 		<label class="control-label" for="username">帳號：</label>
 		<input class="form-control" name="username" type="text" required="required">

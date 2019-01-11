@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -37,7 +37,7 @@ if(!@$includepath){
 error_reporting(E_ALL);
 require_once('database.php');
 
-$database_SQL = "center";//資料庫名稱
+$database_SQL = "disk";//資料庫名稱
 $username_SQL = "root";//連線帳號
 $password_SQL = "usbw";//連線密碼
 $hostname_SQL = "127.0.0.1";//MySQL伺服器

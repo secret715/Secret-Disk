@@ -1,40 +1,8 @@
-/*
-<Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, version 3.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-Also add information on how to contact you by electronic and paper mail.
-
-  If your software can interact with users remotely through a computer
-network, you should also make sure that it provides a way for users to
-get its source.  For example, if your program is a web application, its
-interface could display a "Source" link that leads users to an archive
-of the code.  There are many ways you could offer source, and different
-solutions will be better for different programs; see section 13 for the
-specific requirements.
-
-  You should also get your employer (if you work as a programmer) or school,
-if any, to sign a "copyright disclaimer" for the program, if necessary.
-For more information on this, and how to apply and follow the GNU AGPL, see
-<http://www.gnu.org/licenses/>.
-*/
-
 $(function(){
 	$('#uploadinfo').hide();
 	$('#fileupload').fileupload({
 		dropZone: $('#drop'),
-		url: 'include/ajax/upload.php?dir='+dir,
+		url: 'include/ajax/upload.php?dir='+dir+'&'+auth,
 		dataType: 'json',
 		add: function (e, data) {
 				$('#uploadinfo').show();
@@ -133,14 +101,14 @@ $(function(){
 			$('#mkdir input[name="name"]').attr('disabled','disabled');
 			$('#mkdir .modal-body').prepend('<div class="alert alert-info">新增中，請稍後...</div>');
 			$.ajax({
-				url:'include/ajax/dir.php?mkdir&dir='+dir,
+				url:'include/ajax/dir.php?mkdir&dir='+dir+'&'+auth,
 				type: 'POST',
 				data: {name:$('#mkdir input[name="name"]').val()},
 				dataType: 'json',
 				success: function(data){
 					if(data.status=='success'){
 						$('#mkdir .alert').removeClass('alert-info').addClass('alert-success').text('新增成功！');
-						sd_dir_list();
+						sd_dir_list(dir);
 						setTimeout(function(){
 							$('#mkdir').modal('hide');
 							$('#mkdir .alert').remove();
@@ -160,7 +128,7 @@ $(function(){
 		var self=$(this);
 		if(window.confirm("確定刪除？")){
 			$.ajax({
-				url:'include/ajax/dir.php?del&dir='+dir,
+				url:'include/ajax/dir.php?del&dir='+dir+'&'+auth,
 				type: 'GET',
 				dataType: 'json',
 				success: function(data){
@@ -177,7 +145,7 @@ $(function(){
 	$(document.body).on('click','#file_list .breadcrumb .share',function(e){
 		e.preventDefault();
 		$.ajax({
-			url:'include/ajax/dir.php?share&dir='+dir,
+			url:'include/ajax/dir.php?share&dir='+dir+'&'+auth,
 			type: 'GET',
 			dataType: 'json',
 			success: function(data){
@@ -191,7 +159,7 @@ $(function(){
 	$(document.body).on('click','#file_list .breadcrumb .unshare',function(e){
 		e.preventDefault();
 		$.ajax({
-			url:'include/ajax/dir.php?unshare&dir='+dir,
+			url:'include/ajax/dir.php?unshare&dir='+dir+'&'+auth,
 			type: 'GET',
 			dataType: 'json',
 			success: function(data){
@@ -220,7 +188,7 @@ $(function(){
 				modal.find('input[name="name"]').attr('disabled','disabled');
 				modal.find('.modal-body').prepend('<div class="alert alert-info">正在重新命名...</div>');
 				$.ajax({
-					url:'include/ajax/dir.php?rename&dir='+id,
+					url:'include/ajax/dir.php?rename&dir='+id+'&'+auth,
 					type: 'POST',
 					data: {name:modal.find('input[name="name"]').val()},
 					dataType: 'json',
@@ -254,7 +222,7 @@ $(function(){
 				self.addClass('disabled');
 				modal.find('.modal-body').prepend('<div class="alert alert-info">正在移動...</div>');
 				$.ajax({
-					url:'include/ajax/dir.php?move='+modal.find('input[name="dir"]:checked').val()+'&dir='+dir,
+					url:'include/ajax/dir.php?move='+modal.find('input[name="dir"]:checked').val()+'&dir='+dir+'&'+auth,
 					type: 'GET',
 					dataType: 'json',
 					success: function(data){
@@ -282,7 +250,7 @@ $(function(){
 		var id=$(this).attr('data-id');
 		if(window.confirm("確定刪除？")){
 			$.ajax({
-				url:'include/ajax/file.php?del&id='+id,
+				url:'include/ajax/file.php?del&id='+id+'&'+auth,
 				type: 'GET',
 				dataType: 'json',
 				success: function(data){
@@ -298,7 +266,7 @@ $(function(){
 	$(document.body).on('click','.context-menu .share',function(e){
 		e.preventDefault();
 		$.ajax({
-			url:'include/ajax/file.php?share&id='+$(this).attr('data-id'),
+			url:'include/ajax/file.php?share&id='+$(this).attr('data-id')+'&'+auth,
 			type: 'GET',
 			dataType: 'json',
 			success: function(data){
@@ -311,7 +279,7 @@ $(function(){
 	$(document.body).on('click','.context-menu .unshare',function(e){
 		e.preventDefault();
 		$.ajax({
-			url:'include/ajax/file.php?unshare&id='+$(this).attr('data-id'),
+			url:'include/ajax/file.php?unshare&id='+$(this).attr('data-id')+'&'+auth,
 			type: 'GET',
 			dataType: 'json',
 			success: function(data){
@@ -326,8 +294,8 @@ $(function(){
 		var modal=$('#rename');
 		var $t=$(this);
 		var id=$(this).attr('data-id');
-		var name=$(this).attr('data-name').substring(0,$(this).attr('data-name').lastIndexOf('.'));
-		var ext=$(this).attr('data-name').substring($(this).attr('data-name').lastIndexOf('.'));
+		var name=$('tr[data-id='+id+'] td:eq(1) a').text().substring(0,$('tr[data-id='+id+'] td:eq(1) a').text().lastIndexOf('.'));
+		var ext=$('tr[data-id='+id+'] td:eq(1) a').text().substring($('tr[data-id='+id+'] td:eq(1) a').text().lastIndexOf('.'));
 		modal.modal('show');
 		modal.find('input[name="name"]').val(name);
 		modal.find('.input-group-addon').text(ext);
@@ -339,7 +307,7 @@ $(function(){
 				modal.find('input[name="name"]').attr('disabled','disabled');
 				modal.find('.modal-body').prepend('<div class="alert alert-info">正在重新命名...</div>');
 				$.ajax({
-					url:'include/ajax/file.php?rename&id='+id,
+					url:'include/ajax/file.php?rename&id='+id+'&'+auth,
 					type: 'POST',
 					data: {name:modal.find('input[name="name"]').val()},
 					dataType: 'json',
@@ -348,7 +316,6 @@ $(function(){
 							new_name=modal.find('input[name="name"]').val()+ext;
 							modal.find('.alert').removeClass('alert-info').addClass('alert-success').text('修改成功！');
 							$('tr[data-id='+id+'] td:eq(1) a').text(new_name);
-							$t.attr('data-name',new_name);
 							
 							setTimeout(function(){
 								modal.modal('hide').find('.alert').remove();
@@ -373,7 +340,7 @@ $(function(){
 				self.addClass('disabled');
 				modal.find('.modal-body').prepend('<div class="alert alert-info">正在移動...</div>');
 				$.ajax({
-					url:'include/ajax/file.php?move&id='+id+'&dir='+modal.find('input[name="dir"]:checked').val(),
+					url:'include/ajax/file.php?move&id='+id+'&dir='+modal.find('input[name="dir"]:checked').val()+'&'+auth,
 					type: 'GET',
 					dataType: 'json',
 					success: function(data){
@@ -401,7 +368,7 @@ $(function(){
 			var type='';
 		}
 		$.ajax({
-			url:'include/ajax/dir_list.php?form&dir='+dir+type,
+			url:'include/ajax/dir_list.php?form&dir='+dir+type+'&'+auth,
 			type: 'GET',
 			dataType: 'html',
 			success: function(data){
@@ -414,7 +381,7 @@ $(function(){
 	
 	function sd_dir_list(dir){
 		$.ajax({
-			url:'include/ajax/dir_list.php?dir='+dir,
+			url:'include/ajax/dir_list.php?dir='+dir+'&'+auth,
 			type: 'GET',
 			dataType: 'html',
 			success: function(data){
@@ -426,7 +393,7 @@ $(function(){
 	}
 	function sd_file_list(dir){
 		$.ajax({
-			url:'include/ajax/file_list.php?dir='+dir+'&page='+page,
+			url:'include/ajax/file_list.php?dir='+dir+'&page='+page+'&sort='+sort+'&'+auth,
 			type: 'GET',
 			dataType: 'html',
 			success: function(data){
@@ -448,9 +415,9 @@ $(function(){
 		}else{
 			html+='<a class="list-group-item share" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-globe"></span> 分享</a>';
 		}
-		html+='<a class="list-group-item rename" href="#" data-id="'+o.attr('data-id')+'" data-name="'+o.attr('data-name')+'"><span class="glyphicon glyphicon-pencil"></span> 重新命名</a>';
+		html+='<a class="list-group-item rename" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-pencil"></span> 重新命名</a>';
 		html+='<a class="list-group-item move" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-move"></span> 移動</a>';
-		html+='<a class="list-group-item" href="viewfile.php/'+o.attr('data-name')+'?id='+o.attr('data-share')+'" target="_black"><span class="glyphicon glyphicon-new-window"></span> 預覽</a>';
+		html+='<a class="list-group-item" href="viewfile.php/'+$('tr[data-id='+o.attr('data-id')+'] td:eq(1) a').text()+'?id='+o.attr('data-share')+'" target="_black"><span class="glyphicon glyphicon-new-window"></span> 預覽</a>';
 		html+='<a class="list-group-item del" href="#" data-id="'+o.attr('data-id')+'"><span class="glyphicon glyphicon-trash"></span> 刪除</a>';
 		return html;
 	}
@@ -460,7 +427,7 @@ $(function(){
 		dir=$(this).attr('href').substring($(this).attr('href').lastIndexOf('?dir=')+5);
 		sd_dir_list(dir);
 		sd_file_list(dir);
-		$('#fileupload').fileupload({url: 'include/ajax/upload.php?dir='+dir});
+		$('#fileupload').fileupload({url: 'include/ajax/upload.php?dir='+dir+'&'+auth});
 	});
 	
 	$('<div>').addClass('context-menu list-group').insertAfter('#file_list');

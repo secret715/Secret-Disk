@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -42,7 +42,7 @@ if(!isset($_SESSION['Disk_Username'])){
 
 $_member = sd_get_result("SELECT * FROM `member` WHERE `id` = '%d'",array($_SESSION['Disk_Id']));
 
-if(isset($_POST['email'])&& filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)){
+if(isset($_POST['email'])&& filter_var($_POST['email'], FILTER_VALIDATE_EMAIL) && isset($_GET[$_SESSION['Center_Auth']])){
 	if($_POST['password'] == ''){
 		$_password = $_member['row']['password'];
 	}else {
@@ -75,7 +75,7 @@ $(function(){
 <h2 class="page-header">我的帳號</h2>
 <div class="row">
 	<div class="col-md-6">
-		<form class="form-horizontal form-sm" action="account.php" method="POST">
+		<form class="form-horizontal form-sm" action="account.php?<?php echo $_SESSION['Center_Auth']; ?>" method="POST">
 			<div class="form-group">
 				<label class="col-sm-3 control-label">帳號：</label>
 				<div class="col-sm-6">

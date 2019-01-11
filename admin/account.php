@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -56,16 +56,33 @@ if(isset($_GET['edit']) && $_GET['edit'] != ''){
 		$_GET['edit']=$_member['row']['id'];
 		$_member = sd_get_result("SELECT * FROM `member` WHERE `id` = '%d'",array(abs($_GET['edit'])));
 	}
-}else{
-	$limit_row=30;
-	if(isset($_GET['page'])){
-		$limit_start = abs(intval(($_GET['page']-1)*$limit_row));
-		$_member = sd_get_result("SELECT * FROM `member` ORDER BY `id` ASC LIMIT %d,%d",array($limit_start,$limit_row));
-	} else {
-		$limit_start=0;
-		$_member = sd_get_result("SELECT * FROM `member` ORDER BY `id` ASC LIMIT %d,%d",array($limit_start,$limit_row));
+}elseif(isset($_GET['data'])){
+	$_member = sd_get_result("SELECT * FROM `member` ORDER BY `id` ASC");
+	if($_member['num_rows']==0){
+		die;
 	}
-	
+	$_return=array();
+	do {
+		$_array=array();
+		$_array[]=$_member['row']['id'];
+		$_array[]=$_member['row']['username'];
+		$_array[]=$_member['row']['email'];
+		$_array[]=sd_size($_member['row']['used_space'],1).' / '.sd_size($_member['row']['file_space'],1);
+		$_array[]=sd_member_level($_member['row']['level']);
+		
+		
+		$_text='<a href="account.php?edit='.$_member['row']['id'].'" class="btn btn-info btn-xs">編輯</a>';
+		
+		if($_member['num_rows']>1 && $_member['row']['id']!=$_SESSION['Disk_Id']){
+			$_text.='&nbsp;<a href="account.php?del='.$_member['row']['id'].'" class="btn btn-danger btn-xs">刪除</a>';
+		}
+		
+		$_array[]=$_text;
+		$_return[]=$_array;
+		
+	} while ($_member['row'] = $_member['query']->fetch_assoc());
+	echo json_encode(array('data'=>$_return));
+	die;
 }
 
 $_all_member=sd_get_result("SELECT COUNT(*) FROM `member`");
@@ -190,6 +207,9 @@ $(function(){
 	</div>
 </form>
 <?php } else { ?>
+<script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/1.10.19/js/dataTables.bootstrap.min.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.19/css/dataTables.bootstrap.min.css">
 <script>
 $(function(){
 	$('a.btn.btn-danger').click(function(e){
@@ -197,38 +217,52 @@ $(function(){
 			e.preventDefault();
 		}
 	});
+	
+	$('table').DataTable({
+		"pageLength": 50,
+		"language": 
+		{
+			"sProcessing":   "處理中...",
+			"sLengthMenu":   "顯示 _MENU_ 項結果",
+			"sZeroRecords":  "沒有符合的結果",
+			"sInfo":         "顯示第 _START_ 至 _END_ 項結果，共 _TOTAL_ 項",
+			"sInfoEmpty":    "顯示第 0 至 0 項結果，共 0 項",
+			"sInfoFiltered": "(由 _MAX_ 項結果中過濾)",
+			"sInfoPostFix":  "",
+			"sSearch":       "搜尋:",
+			"sUrl":          "",
+			"sEmptyTable":     "無資料",
+			"sLoadingRecords": "載入中...",
+			"sInfoThousands":  ",",
+			"oPaginate": {
+				"sFirst":    "第一頁",
+				"sPrevious": "上一頁",
+				"sNext":     "下一頁",
+				"sLast":     "最後一頁"
+			},
+			"oAria": {
+				"sSortAscending":  ": 升冪排列",
+				"sSortDescending": ": 降冪排列"
+			}
+		},
+        "ajax": "account.php?data"
+	});
 });
 </script>
 <table class="table table-striped table-hover">
-  <tr>
-    <th width="10%">ID</th>
-    <th width="20%">帳號</th>
-	<th width="20%">電子信箱</th>
-	<th width="20%">檔案空間</th>
-    <th width="15%">權限</th>
-    <th width="15%">管理</th>
-  </tr>
-<?php do { ?>
-  <tr>
-    <td><?php echo $_member['row']['id']; ?></td>
-    <td><?php echo $_member['row']['username']; ?></td>
-	<td><small><?php echo $_member['row']['email']; ?></small></td>
-	<td><small><?php echo sd_size($_member['row']['used_space'],1).' / '.sd_size($_member['row']['file_space'],1); ?></small></td>
-    <td><?php echo sd_member_level($_member['row']['level']); ?></td>
-    <td>
-		<a href="account.php?edit=<?php echo $_member['row']['id'] ;?>" class="btn btn-info btn-sm">編輯</a>
-		<?php if(implode('',$_all_member['row'])>1 && $_member['row']['id']!=$_SESSION['Disk_Id']){ ?>
-			<a href="account.php?del=<?php echo $_member['row']['id'] ;?>" class="btn btn-danger btn-sm">刪除</a>
-		<?php } ?>
-	</td>
-  </tr>
-<?php } while ($_member['row'] = $_member['query']->fetch_assoc()); ?>
+	<thead>
+		<tr>
+		<th width="10%">ID</th>
+		<th width="20%">帳號</th>
+		<th width="20%">電子信箱</th>
+		<th width="20%">檔案空間</th>
+		<th width="15%">權限</th>
+		<th width="15%">管理</th>
+		</tr>
+	</thead>
+	<tbody>
+	</tbody>
 </table>
-<div>
-<?php
-echo sd_page_pagination('account.php',@$_GET['page'],implode('',$_all_member['row']),30);
-?>
-</div>
 <?php } ?>
 <?php
 $view->render();

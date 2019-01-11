@@ -22,14 +22,19 @@ Secret Disk
 -----
 本專案所引用的其他開放原始碼軟體：
 
->Bootstrap v3.3.7
+>Bootstrap
 授權：MIT License  
 官方網站：http://getbootstrap.com/
 
->jQuery File Upload v9.14.2
+>jQuery File Upload
 授權：MIT License  
 官方網站：https://blueimp.github.io/jQuery-File-Upload/
 
+
+>Datatables
+授權：MIT License  
+官方網站：https://datatables.net/
+
 ***
-Secret Disk 由 [Secret] (http://gdsecret.com/) 製作
+Secret Disk 由 [Secret] (https://gdsecret.com/) 製作
 使用 GNU AFFERO GENERAL PUBLIC LICENSE 3.0 (AGPL 3.0) 授權。

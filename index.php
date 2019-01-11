@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -66,10 +66,12 @@ $view->addScript('include/js/fileupload/jquery.fileupload.js');
 $view->addScript('include/js/filemanager.js');
 ?>
 <script>
+var auth='<?php echo $_SESSION['Disk_Auth']; ?>';
 var banext=['<?php echo implode("','",$disk['upload']['banext']); ?>'];
 var max_file_size=<?php echo $disk['upload']['max_size']; ?>*1000;
 var dir=<?php echo $_DiskENV['dir']; ?>;
 var page=<?php if(isset($_GET['page'])){echo abs($_GET['page']);}else{echo '0';} ?>;
+var sort='<?php if(isset($_GET['sort'])){echo substr(intval($_GET['sort']),0,2);}else{echo '00';} ?>';
 </script>
 <div class="row">
 	<div id="file_list" class="col-md-9">

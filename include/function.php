@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -32,7 +32,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 */
 
 function sd_ver(){
-	return '1.1.1';
+	return '1.2';
 }
 
 function sd_keygen($_value=''){
@@ -74,6 +74,7 @@ function sd_login($_username,$_password){
 			$_SESSION['Disk_Username'] = strtolower($_username);
 			$_SESSION['Disk_Id'] = $info['id'];
 			$_SESSION['Disk_UserGroup'] = $info['level'];
+			$_SESSION['Disk_Auth'] = substr(sd_keygen(),0,5);
 			setcookie("login", time(), time()+10800);
 			return 1;
 		}
@@ -86,9 +87,11 @@ function sd_loginout(){
 	$_SESSION['Disk_Username'] = NULL;
 	$_SESSION['Disk_Id'] = NULL;
 	$_SESSION['Disk_UserGroup'] = NULL;
+	$_SESSION['Disk_Auth'] = NULL;
 	unset($_SESSION['Disk_Username']);
 	unset($_SESSION['Disk_Id']);
 	unset($_SESSION['Disk_UserGroup']);
+	unset($_SESSION['Disk_Auth']);
 	setcookie("login", "", time()-10800);
 	return 1;
 }
@@ -173,15 +176,15 @@ function sd_size($_size,$_precision=2){
 	}else{
 		$_sign='';
 	}
-	if($_size<1200){
+	if($_size<1100){
 		return $_sign.round($_size,$_precision).' Byte';
-	}elseif($_size/1000<1200){
+	}elseif($_size/1000<1100){
 		return $_sign.round($_size/1000,$_precision) .' KB';
-	}elseif($_size/1000/1000<1200){
+	}elseif($_size/1000/1000<1100){
 		return $_sign.round($_size/1000/1000,$_precision) .' MB';
-	}elseif($_size/1000/1000/1000<1200){
+	}elseif($_size/1000/1000/1000<1100){
 		return $_sign.round($_size/1000/1000/1000,$_precision) .' GB';
-	}elseif($_size/1000/1000/1000/1000<1200){
+	}elseif($_size/1000/1000/1000/1000<1100){
 		return $_sign.round($_size/1000/1000/1000/1000,$_precision) .' TB';
 	}else{
 		return $_sign.round($_size/1000/1000/1000/1000/1000,$_precision) .' PB';
@@ -374,4 +377,28 @@ function sd_dir_delete($_dir,$_id,$_path='./'){
 	$SQL->query("UPDATE `member` SET `used_space` = `used_space`-'%d' WHERE `id` = '%d'",array($_space,$_id));
 	$SQL->query("DELETE FROM `file` WHERE `dir` IN(%s)",array($_dir_id));
 	$SQL->query("DELETE FROM `dir` WHERE `id` IN(%s)",array($_dir_id));
+}
+
+
+function sd_encode($_value,$_key){
+	$type=MCRYPT_RIJNDAEL_256;
+	$mode=MCRYPT_MODE_CBC;
+	$iv_size=mcrypt_get_iv_size($type,$mode);
+	$key_size=mcrypt_get_key_size($type,$mode);
+	$key=substr(hash('sha1',$_key),0,$key_size);
+	$iv=substr(hash('md5',$_key),0,$iv_size);
+	
+	return mcrypt_encrypt($type,$key,$_value,$mode,$iv);
+
+}
+
+function sd_decode($_value,$_key){
+	$type=MCRYPT_RIJNDAEL_256;
+	$mode=MCRYPT_MODE_CBC;
+	$iv_size=mcrypt_get_iv_size($type,$mode);
+	$key_size=mcrypt_get_key_size($type,$mode);
+	$key=substr(hash('sha1',$_key),0,$key_size);
+	$iv=substr(hash('md5',$_key),0,$iv_size);
+	
+	return rtrim(mcrypt_decrypt($type,$key,$_value,$mode,$iv));
 }

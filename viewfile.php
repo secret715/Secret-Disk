@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -33,6 +33,7 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 require_once('Connections/SQL.php');
 require_once('config.php');
+require_once('include/key.php');
 
 if(isset($_GET['id'])&&$_GET['id']!=''){
 	$_file=sd_get_result("SELECT * FROM `file` WHERE `share_id`='%s'",array($_GET['id']));
@@ -70,8 +71,14 @@ if(isset($_GET['id'])&&$_GET['id']!=''){
 	}else{
 		header('Content-Length: '.$_file['row']['size']);
 	}
-	header('Content-type: ' . $_file['row']['type']);
-	echo sd_file_decode($_file['row']['private_key'],'file/'.$_file['row']['server_name'].'.sdfile',$_file['row']['size'],$_offset);
+	
+	if(in_array(substr($_file['row']['type'],0,strpos($_file['row']['type'],'/')),array('audio','image','video'))){
+		header('Content-type: ' . $_file['row']['type']);
+	}else{
+		header('Content-type: application/octet-stream');
+	}
+	
+	echo sd_file_decode(sd_decode(base64_decode($_file['row']['private_key']),$disk['key']),'file/'.$_file['row']['server_name'].'.sdfile',$_file['row']['size'],$_offset);
 	
 	//readfile($file_path);
 }else{

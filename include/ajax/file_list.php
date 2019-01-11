@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -33,9 +33,10 @@ For more information on this, and how to apply and follow the GNU AGPL, see
 
 set_include_path('../../include/');
 $includepath = true;
-require_once('../../config.php');
 require_once('../../Connections/SQL.php');
-if(!isset($_SESSION['Disk_Username'])){
+require_once('../../config.php');
+
+if(!isset($_SESSION['Disk_Username']) or !isset($_GET[$_SESSION['Disk_Auth']])){
 	exit;
 }
 
@@ -46,13 +47,36 @@ if(isset($_GET['dir'])&&$_GET['dir']>0){
 		$_DiskENV['dir']=$_dir['row']['id'];
 	}
 }
+
+if(!isset($_GET['sort'])){
+	$_GET['sort']='00';
+}
+if(isset($_GET['sort'])){
+	if(strlen($_GET['sort'])!=2){
+		$_GET['sort']=str_pad($_GET['sort'],2,0,STR_PAD_LEFT);
+	}
+	$_table=array('name','size','mktime');
+	$_a=str_split($_GET['sort'],1);
+	if(!isset($_table[$_a[0]])){
+		$_a[0]=0;
+	}
+	
+	$_sort='`'.$_table[$_a[0]].'` ';
+	
+	if($_a[1]==1){
+		$_sort.='DESC';
+	}else{
+		$_sort.='ASC';
+	}
+}
+
 $limit_row=30;
 if(isset($_GET['page'])&&$_GET['page']>0){
 	$limit_start = abs(intval(($_GET['page']-1)*$limit_row));
-	$_file = sd_get_result("SELECT * FROM `file` WHERE `dir`='%d' AND `owner`='%d' ORDER BY `name` ASC LIMIT %d,%d",array($_DiskENV['dir'],$_SESSION['Disk_Id'],$limit_start,$limit_row));
+	$_file = sd_get_result("SELECT * FROM `file` WHERE `dir`='%d' AND `owner`='%d' ORDER BY %s LIMIT %d,%d",array($_DiskENV['dir'],$_SESSION['Disk_Id'],$_sort,$limit_start,$limit_row));
 } else {
 	$limit_start=0;
-	$_file = sd_get_result("SELECT * FROM `file` WHERE `dir`='%d' AND `owner`='%d' ORDER BY `name` ASC LIMIT %d,%d",array($_DiskENV['dir'],$_SESSION['Disk_Id'],$limit_start,$limit_row));
+	$_file = sd_get_result("SELECT * FROM `file` WHERE `dir`='%d' AND `owner`='%d' ORDER BY %s LIMIT %d,%d",array($_DiskENV['dir'],$_SESSION['Disk_Id'],$_sort,$limit_start,$limit_row));
 }
 ?>
 <ol class="breadcrumb">
@@ -85,9 +109,9 @@ if(isset($_GET['page'])&&$_GET['page']>0){
 	<thead>
 		<tr>
 			<th></th>
-			<th>名稱</th>
-			<th>大小</th>
-			<th>上傳時間</th>
+			<th><a href="?dir=<?php echo $_DiskENV['dir']; ?>&sort=0<?php if($_a[0]==0)echo ($_a[1]+1)%2; else echo 0; ?>">名稱<?php if($_a[0]==0){ ?><span class="glyphicon glyphicon-menu-<?php if($_a[1]==0){ ?>down<?php }else{ ?>up<?php } ?>"></span><?php } ?></a></th>
+			<th><a href="?dir=<?php echo $_DiskENV['dir']; ?>&sort=1<?php if($_a[0]==1)echo ($_a[1]+1)%2; else echo 0; ?>">大小<?php if($_a[0]==1){ ?><span class="glyphicon glyphicon-menu-<?php if($_a[1]==0){ ?>down<?php }else{ ?>up<?php } ?>"></span><?php } ?></th>
+			<th><a href="?dir=<?php echo $_DiskENV['dir']; ?>&sort=2<?php if($_a[0]==2)echo ($_a[1]+1)%2; else echo 0; ?>">上傳時間<?php if($_a[0]==2){ ?><span class="glyphicon glyphicon-menu-<?php if($_a[1]==0){ ?>down<?php }else{ ?>up<?php } ?>"></span><?php } ?></a></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -108,14 +132,12 @@ if(isset($_GET['page'])&&$_GET['page']>0){
 				break;
 		}
 	?>
-	<tr data-id="<?php echo $_file['row']['id']; ?>" data-share="<?php echo $_file['row']['share_id']; ?>" data-name="<?php echo $_file['row']['name']; ?>">
+	<tr data-id="<?php echo $_file['row']['id']; ?>" data-share="<?php echo $_file['row']['share_id']; ?>">
 		<td width="20">
 			<span class="glyphicon glyphicon-<?php echo $_icon; ?>"></span>
 		</td>
 		<td>
-			<a href="readfile.php?id=<?php echo $_file['row']['share_id']; ?>">
-				<?php echo $_file['row']['name']; ?>
-			</a>
+			<a href="readfile.php?id=<?php echo $_file['row']['share_id']; ?>"><?php echo $_file['row']['name']; ?></a>
 			<?php if($_file['row']['share']==1){ ?>
 			<span class="glyphicon glyphicon-globe"></span>
 			<?php } ?>
@@ -129,7 +151,7 @@ if(isset($_GET['page'])&&$_GET['page']>0){
 </table>
 <?php
 $_all_file=sd_get_result("SELECT COUNT(*) FROM `file` WHERE `dir`='%d' AND `owner`='%d'",array($_DiskENV['dir'],$_SESSION['Disk_Id']));
-echo sd_page_pagination('',@$_GET['page'],implode('',$_all_file['row']),$limit_row,'&dir='.$_DiskENV['dir']);
+echo sd_page_pagination('',@$_GET['page'],implode('',$_all_file['row']),$limit_row,'&dir='.$_DiskENV['dir'].'&sort='.$_GET['sort']);
 ?>
 <?php }else{ ?>
 <div class="alert alert-danger">沒有檔案</div>

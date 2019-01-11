@@ -1,7 +1,7 @@
 <?php
 /*
 <Secret Disk>
-Copyright (C) 2012-2017 太陽部落格站長 Secret <http://gdsecret.com>
+Copyright (C) 2012-2019 Secret <https://gdsecret.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as published by
@@ -250,6 +250,7 @@ if($_step==5){
 						$errormsg = '資料庫連線失敗<br>'.mysqli_connect_error();
 					}else{
 						require_once('Connections/SQL.php');
+						require_once('config.php');
 						if(isset($_POST['admin_id'])){
 							if($_POST['admin_id'] == NULL){
 								$admin_id = 'admin';
@@ -274,6 +275,9 @@ if($_step==5){
 							if($val!=''){
 								$SQL->query($val);
 							}
+						}
+						if(!file_exists('include/key.php')){
+							file_put_contents('include/key.php','<?php $disk[\'key\']=\''.sd_keygen().'\';');
 						}
 					}
 				}else{

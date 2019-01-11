@@ -3,6 +3,7 @@ body{
 	font-size:15.2px;
 	line-height:1.65em;
 	padding-top: 50px;
+	font-family:'Open Sans','思源黑體','微軟正黑體';
 }
 li{
 	line-height:1.8em;
@@ -85,8 +86,8 @@ footer{
 	display: none;
 	-moz-user-select: none;
 	-webkit-user-select: none;
-	border:1px soild gray;
-	box-shadow:0 0 1px gray;
+	border: 1px solid rgba(0,0,0,.15);
+	box-shadow: 0 6px 12px rgba(0,0,0,.175);
 	border-radius:3px;
 	padding-top:5px;
 	padding-bottom:5px;
